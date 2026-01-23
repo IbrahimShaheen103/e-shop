@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CartScreen from "../screens/Cart/Cart.screen";
+import HomeScreen from "../screens/Home/Home.screen";
 import SearchScreen from "../screens/Search/Search.screen";
 import { useCartStore } from "../store/cart.store";
-import HomeStack from "./HomeStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -13,15 +13,15 @@ export default function MainTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
-        name="HomeTab"
-        component={HomeStack}
+        name="Home"
+        component={HomeScreen}
         options={{
-          title: "Home",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
         }}
       />
+
       <Tab.Screen
         name="Cart"
         component={CartScreen}

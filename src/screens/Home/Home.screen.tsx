@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import AppHeader from "../../components/AppHeader/AppHeader";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import { HomeStackParamList } from "../../navigation/HomeStack";
+import { RootStackParamList } from "../../navigation/RootStack";
 import { useCartStore } from "../../store/cart.store";
 import { useProductsStore } from "../../store/products.store";
 import HEADER_THEMES from "../../types/headerTheme";
@@ -12,7 +12,7 @@ import styles from "./Home.styles";
 export default function HomeScreen() {
   const { isLoading, error, products, fetchProducts } = useProductsStore();
   const navigation =
-    useNavigation<NativeStackNavigationProp<HomeStackParamList>>();
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { items, addItem, increaseQty, decreaseQty } = useCartStore();
 
   useEffect(() => {

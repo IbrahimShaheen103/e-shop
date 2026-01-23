@@ -1,19 +1,32 @@
 import { create } from "zustand";
-import { getProductById, getProducts, Product } from "../api/products.api";
+import {
+  getProductById,
+  getProducts,
+  Product,
+  searchProducts as searchApi,
+} from "../api/products.api";
 
-type ProductsState = {
+interface ProductsState {
   products: Product[];
   selectedProduct: Product | null;
+
+  searchResults: Product[];
+  isSearching: boolean;
+  searchError: string | null;
   isLoading: boolean;
   error: string | null;
-
   fetchProducts: () => Promise<void>;
   fetchProductById: (id: number) => Promise<void>;
+  searchProducts: (query: string) => Promise<void>;
+  clearSearch: () => void;
   clearSelectedProduct: () => void;
-};
+}
 
 export const useProductsStore = create<ProductsState>((set) => ({
   products: [],
+  searchResults: [],
+  isSearching: false,
+  searchError: null,
   selectedProduct: null,
   isLoading: false,
   error: null,
@@ -56,5 +69,35 @@ export const useProductsStore = create<ProductsState>((set) => ({
 
   clearSelectedProduct: () => {
     set({ selectedProduct: null });
+  },
+  searchProducts: async (query) => {
+    if (!query.trim()) {
+      set({ searchResults: [], isSearching: false });
+      return;
+    }
+
+    try {
+      set({ isSearching: true, searchError: null });
+
+      const response = await searchApi(query);
+
+      set({
+        searchResults: response.products,
+        isSearching: false,
+      });
+    } catch (err) {
+      set({
+        searchError: String(err),
+        isSearching: false,
+      });
+    }
+  },
+
+  clearSearch: () => {
+    set({
+      searchResults: [],
+      searchError: null,
+      isSearching: false,
+    });
   },
 }));
