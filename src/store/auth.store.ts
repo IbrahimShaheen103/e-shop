@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { login, LoginPayload, LoginResponse } from "../api/auth.api";
 
+const AUTH_STORAGE_KEY = "E-SHOP-AUTH";
 type AuthState = {
   user: LoginResponse | null;
   token: string | null;
@@ -10,6 +12,7 @@ type AuthState = {
 
   loginUser: (payload: LoginPayload) => Promise<void>;
   logout: () => void;
+  hydrateAuth: () => Promise<void>;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -25,6 +28,14 @@ export const useAuthStore = create<AuthState>((set) => ({
 
       const response = await login(payload);
 
+      const authData = {
+        user: response,
+        token: response.token,
+        isLoggedIn: true,
+      };
+
+      await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
+
       set({
         user: response,
         token: response.token,
@@ -39,7 +50,26 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  logout: () => {
+  hydrateAuth: async () => {
+    try {
+      const stored = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
+      if (!stored) return;
+
+      const parsed = JSON.parse(stored);
+
+      set({
+        user: parsed.user,
+        token: parsed.token,
+        isLoggedIn: true,
+      });
+    } catch (err) {
+      console.log("Failed to hydrate auth", err);
+    }
+  },
+
+  logout: async () => {
+    await AsyncStorage.removeItem(AUTH_STORAGE_KEY);
+
     set({
       user: null,
       token: null,
