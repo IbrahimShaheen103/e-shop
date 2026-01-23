@@ -21,6 +21,7 @@ import styles from "./Search.styles";
 export default function SearchScreen() {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -60,11 +61,37 @@ export default function SearchScreen() {
       <TextInput
         placeholder="Search products..."
         value={query}
-        onChangeText={setQuery}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onChangeText={(text) => {
+          setQuery(text);
+          setShowSuggestions(true);
+        }}
+        onFocus={() => {
+          setFocused(true);
+          setShowSuggestions(true);
+        }}
+        onBlur={() => {
+          setFocused(false);
+          // delay to allow tap
+          setTimeout(() => setShowSuggestions(false), 150);
+        }}
         style={styles.input}
       />
+      {showSuggestions && query !== "" && searchResults.length > 0 && (
+        <View style={styles.suggestions}>
+          {searchResults.slice(0, 5).map((item) => (
+            <Text
+              key={item.id}
+              style={styles.suggestionItem}
+              onPress={() => {
+                setQuery(item.title);
+                setShowSuggestions(false);
+              }}
+            >
+              {item.title}
+            </Text>
+          ))}
+        </View>
+      )}
 
       {isSearching && <ActivityIndicator style={{ marginTop: 24 }} />}
 
@@ -79,6 +106,7 @@ export default function SearchScreen() {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
+        onScrollBeginDrag={() => setShowSuggestions(false)}
         renderItem={({ item }) => {
           const quantity = getQuantity(item.id);
 

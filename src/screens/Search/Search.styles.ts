@@ -26,4 +26,21 @@ export default StyleSheet.create({
     color: "#777",
     fontSize: 15,
   },
+  suggestions: {
+    marginHorizontal: 16,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginTop: -8,
+    zIndex: 10,
+  },
+
+  suggestionItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+    fontSize: 14,
+  },
 });
