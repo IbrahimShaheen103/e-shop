@@ -8,7 +8,7 @@ const HEADER_THEMES = {
     text: "#ECFDF5",
   },
   search: {
-    bg: "#1F2933",
+    bg: "#285786",
     text: "#E5E7EB",
   },
 };

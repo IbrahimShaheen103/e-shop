@@ -13,6 +13,7 @@ type AuthState = {
   loginUser: (payload: LoginPayload) => Promise<void>;
   logout: () => void;
   hydrateAuth: () => Promise<void>;
+  requireLogin: () => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -53,17 +54,26 @@ export const useAuthStore = create<AuthState>((set) => ({
   hydrateAuth: async () => {
     try {
       const stored = await AsyncStorage.getItem(AUTH_STORAGE_KEY);
-      if (!stored) return;
+
+      if (!stored) {
+        // ⚠️ DO NOT override state if no stored auth
+        return;
+      }
 
       const parsed = JSON.parse(stored);
 
-      set({
-        user: parsed.user,
-        token: parsed.token,
-        isLoggedIn: true,
+      set((state) => {
+        // ✅ already logged in → do nothing
+        if (state.isLoggedIn) return state;
+
+        return {
+          user: parsed.user,
+          token: parsed.token,
+          isLoggedIn: true,
+        };
       });
-    } catch (err) {
-      console.log("Failed to hydrate auth", err);
+    } catch (e) {
+      console.log("Auth hydrate failed", e);
     }
   },
 
@@ -73,6 +83,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({
       user: null,
       token: null,
+      isLoggedIn: false,
+    });
+  },
+  requireLogin: () => {
+    set({
       isLoggedIn: false,
     });
   },

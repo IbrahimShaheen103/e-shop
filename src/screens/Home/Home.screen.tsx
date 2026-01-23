@@ -3,7 +3,9 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useEffect } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import AppHeader from "../../components/AppHeader/AppHeader";
+import AuthRequiredModal from "../../components/AuthRequiredModal/AuthRequiredModal";
 import ProductCard from "../../components/ProductCard/ProductCard";
+import { useAuthGuard } from "../../hooks/useAuthGurad";
 import { RootStackParamList } from "../../navigation/RootStack";
 import { useCartStore } from "../../store/cart.store";
 import { useProductsStore } from "../../store/products.store";
@@ -14,6 +16,7 @@ export default function HomeScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { items, addItem, increaseQty, decreaseQty } = useCartStore();
+  const { showModal, closeModal, requireAuth } = useAuthGuard();
 
   useEffect(() => {
     fetchProducts();
@@ -45,6 +48,7 @@ export default function HomeScreen() {
         title="E-Shop"
         backgroundColor={HEADER_THEMES.home.bg}
         iconColor={HEADER_THEMES.home.text}
+        showLogoutIcon
       />
 
       <FlatList
@@ -59,9 +63,11 @@ export default function HomeScreen() {
             <ProductCard
               product={item}
               quantity={quantity}
-              onAdd={() =>
-                quantity === 0 ? addItem(item.id, 1) : increaseQty(item.id)
-              }
+              onAdd={() => {
+                requireAuth(() =>
+                  quantity === 0 ? addItem(item.id, 1) : increaseQty(item.id),
+                );
+              }}
               onRemove={() => decreaseQty(item.id)}
               onPress={() =>
                 navigation.navigate("ProductDetails", {
@@ -73,6 +79,7 @@ export default function HomeScreen() {
         }}
         showsVerticalScrollIndicator={false}
       />
+      <AuthRequiredModal visible={showModal} onClose={closeModal} />
     </View>
   );
 }

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Text,
@@ -6,18 +8,28 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { RootStackParamList } from "../../navigation/RootStack";
 import { useAuthStore } from "../../store/auth.store";
 import styles from "./login.styles";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { loginUser, isLoading, error } = useAuthStore();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { loginUser, isLoading, error, isLoggedIn } = useAuthStore();
 
   const handleLogin = () => {
     if (!username || !password) return;
     loginUser({ username, password });
   };
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation.replace("MainTabs");
+    }
+  }, [isLoggedIn]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome Back</Text>

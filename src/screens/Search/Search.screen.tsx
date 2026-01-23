@@ -56,6 +56,7 @@ export default function SearchScreen() {
         compact={focused}
         backgroundColor={HEADER_THEMES.search.bg}
         iconColor={HEADER_THEMES.search.text}
+        showLogoutIcon
       />
 
       <TextInput
