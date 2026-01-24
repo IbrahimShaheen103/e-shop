@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CartScreen from "../screens/Cart/Cart.screen";
 import HomeScreen from "../screens/Home/Home.screen";
+import ProfileScreen from "../screens/Profile/Profile.screen";
 import SearchScreen from "../screens/Search/Search.screen";
 import { useCartStore } from "../store/cart.store";
 
@@ -39,6 +40,15 @@ export default function MainTabs() {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="search" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="accessibility" size={size} color={color} />
           ),
         }}
       />
