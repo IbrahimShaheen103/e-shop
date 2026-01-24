@@ -7,6 +7,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/playstore.png",
         "backgroundColor": "#111111"
+      },
+      "package": "com.ibrahimshaheen.eshop"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f5d19c76-a67c-462d-92ee-5d88e980f310"
       }
     }
   }
