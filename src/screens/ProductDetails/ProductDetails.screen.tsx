@@ -1,4 +1,4 @@
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -9,15 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { HomeStackParamList } from "../../navigation/HomeStack";
 import { useCartStore } from "../../store/cart.store";
 import { useProductsStore } from "../../store/products.store";
 import styles from "./ProductDetails.styles";
 
-type RouteProps = RouteProp<HomeStackParamList, "ProductDetails">;
-
 export default function ProductDetailsScreen() {
-  const route = useRoute<RouteProps>();
+  const route = useRoute<any>();
   const { productId } = route.params;
 
   const { fetchProductById, selectedProduct, isLoading } = useProductsStore();
